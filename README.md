@@ -1,0 +1,2 @@
+# shorty
+Simple link shortener
