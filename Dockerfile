@@ -1,6 +1,9 @@
 FROM mhart/alpine-node:11 as build
 WORKDIR /repo
 COPY . .
+
+ENV NODE_ENV=production
+
 RUN yarn
 RUN yarn build
 RUN yarn install --production --ignore-scripts --prefer-offline
@@ -11,4 +14,4 @@ COPY --from=build /repo .
 
 EXPOSE 3000
 
-CMD ["/repo/node_modules/.bin/next", "start"]
+CMD ["node", "server"]
