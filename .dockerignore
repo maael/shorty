@@ -1,0 +1,5 @@
+node_modules/
+.circleci/
+Dockerfile
+.dockerignore
+data/
