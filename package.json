@@ -11,13 +11,16 @@
     "start": "NODE_ENV=production node server/index.js"
   },
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "next": "^8.0.3",
     "pokemon": "^1.2.3",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-toastify": "^4.5.2",
     "sqlite3": "^4.0.6",
     "superb": "^3.0.0"
-  }
+  },
+  "devDependencies": {}
 }

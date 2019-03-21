@@ -1,4 +1,6 @@
 import {useEffect, useState, useRef} from 'react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css'
 import animate from './animate'
 import List from './List'
 
@@ -72,6 +74,9 @@ export default () => {
     copyToClipboard(fullURL(result.shortened))
     const latestURLs = await getURLs()
     updateURLs(latestURLs)
+    toast('Copied', {
+      toastId: 'copied'
+    })
   }
 
   return (
@@ -91,6 +96,13 @@ export default () => {
           position:absolute;
           bottom:0;
           left:0
+        }
+        .custom-toast {
+          background: #191D4C;
+          border-radius: 20px;
+          box-shadow: 0px 3px 3px #000000;
+          color: #FFFFFF;
+          text-align: center;
         }
       `}</style>
       <div style={{
@@ -117,12 +129,14 @@ export default () => {
             onPaste={async (e) => {
               const pasted = e.clipboardData.getData('Text')
               updateUrl(pasted)
-              console.info('set url to', pasted)
               const result = await createShort(pasted)
               updateShort(result.shortened)
               copyToClipboard(fullURL(result.shortened))
               const latestURLs = await getURLs()
               updateURLs(latestURLs)
+              toast('Copied', {
+                toastId: 'copied'
+              })
             }}
             style={{
               outline: 'none',
@@ -134,13 +148,25 @@ export default () => {
               fontSize: '2em',
               width: '60vw',
               textOverflow: 'ellipsis',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              boxShadow: '0px 3px 3px #000000'
             }}
           />
         </form>
         <List urls={urls} />
       </div>
       <canvas ref={canvas}></canvas>
+      <ToastContainer
+        position={toast.POSITION.BOTTOM_CENTER}
+        autoClose={3000}
+        hideProgressBar
+        toastClassName='custom-toast'
+        closeButton={false}
+        style={{
+          width: 100,
+          marginLeft: -50
+        }}
+      />
     </div>
   )
 }
