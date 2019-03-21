@@ -1,6 +1,7 @@
 import {useEffect, useState, useRef} from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
+import Head from 'next/head'
 import animate from './animate'
 import List from './List'
 
@@ -81,6 +82,9 @@ export default () => {
 
   return (
     <div>
+      <Head>
+        <meta name="theme-color" content="#110E19" />
+      </Head>
       <style jsx global>{`
         body, html {
           background-color: #110E19;
