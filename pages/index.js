@@ -46,6 +46,7 @@ export default () => {
   const [short, updateShort] = useState('')
   const canvas = useRef()
   const initial = useRef()
+  const resize = useRef()
 
   const [urls, updateURLs] = useState([])
   const initialUrls = useRef()
@@ -66,24 +67,45 @@ export default () => {
         initial.current = true
       }
     }, 10)
+    window.onresize = () => {
+      if (resize.current) clearTimeout(resize.current)
+      resize.current = setTimeout(() => {
+        if (canvas.current) {
+          animate(canvas.current)
+          initial.current = true
+        }
+      }, 50)
+    }
   })
 
   const onSubmit = async (e) => {
     e && e.preventDefault()
-    const result = await createShort(url)
-    updateShort(result.shortened)
-    copyToClipboard(fullURL(result.shortened))
-    const latestURLs = await getURLs()
-    updateURLs(latestURLs)
-    toast('Copied', {
-      toastId: 'copied'
-    })
+    await handleUrlShorten(url)
+  }
+
+  const handleUrlShorten = async (input) => {
+    try {
+      const result = await createShort(input)
+      updateShort(result.shortened)
+      copyToClipboard(fullURL(result.shortened))
+      const latestURLs = await getURLs()
+      updateURLs(latestURLs)
+      toast('Copied', {
+        toastId: 'copied'
+      })
+    } catch (e) {
+      console.error('Error shortening on paste', se)
+      toast('Error', {
+        toastId: 'error'
+      })
+    }
   }
 
   return (
-    <div>
+    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', flexDirection: 'row'}}>
       <Head>
         <meta name="theme-color" content="#110E19" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <style jsx global>{`
         body, html {
@@ -108,16 +130,15 @@ export default () => {
           color: #FFFFFF;
           text-align: center;
         }
+        input[placeholder] {
+          text-overflow: ellipsis !important;
+        }
       `}</style>
       <div style={{
-        position: 'absolute',
-        top: '20%',
-        left: '50%',
-        transform: 'translateX(-50%)',
         zIndex: 99,
         boxSizing: 'border-box',
       }}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} style={{display: 'flex'}}>
           <input
             type='text'
             value={short ? fullURL(short) : url}
@@ -133,16 +154,10 @@ export default () => {
             onPaste={async (e) => {
               const pasted = e.clipboardData.getData('Text')
               updateUrl(pasted)
-              const result = await createShort(pasted)
-              updateShort(result.shortened)
-              copyToClipboard(fullURL(result.shortened))
-              const latestURLs = await getURLs()
-              updateURLs(latestURLs)
-              toast('Copied', {
-                toastId: 'copied'
-              })
+              await handleUrlShorten(pasted)
             }}
             style={{
+              flex: 1,
               outline: 'none',
               border: 0,
               padding: '20px 30px',
@@ -150,7 +165,7 @@ export default () => {
               color: '#ffffff',
               backgroundColor: '#191D4C',
               fontSize: '2em',
-              width: '60vw',
+              maxWidth: '60vw',
               textOverflow: 'ellipsis',
               boxSizing: 'border-box',
               boxShadow: '0px 3px 3px #000000'
