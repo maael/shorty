@@ -62,3 +62,6 @@ typings/
 
 # data
 data/
+
+# Git info
+git.info

@@ -8,6 +8,7 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 const api = require('./api')
+const info = require('./info')
 
 app.prepare().then(() => {
   const server = express()
@@ -21,6 +22,8 @@ app.prepare().then(() => {
       res.send({ok: 1, err})
     })
   })
+
+  server.use(info)
 
   server.use(api)
 
